@@ -1,0 +1,7 @@
+.dockerignore
+.editorconfig
+
+build.ps1
+Dockerfile.2017
+Dockerfile.2019
+push.ps1
