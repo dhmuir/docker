@@ -1,0 +1,28 @@
+#
+# Homelab Machine Monitoring Services
+#
+# References:
+# - https://blog.linuxserver.io/2017/11/25/how-to-monitor-your-server-using-grafana-influxdb-and-telegraf/
+#
+
+version: "2.4"
+services:
+  influxdb:
+    image: library/influxdb:1.8
+    container_name: monitor-influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - /opt/appdata/influxdb:/var/lib/influxdb
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:7.1.5-ubuntu
+    container_name: monitor-grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - /opt/appdata/grafana:/var/lib/grafana
+    depends_on:
+      - influxdb
+    restart: unless-stopped
