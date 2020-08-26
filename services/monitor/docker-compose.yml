@@ -10,19 +10,45 @@ services:
   influxdb:
     image: library/influxdb:1.8
     container_name: monitor-influxdb
+    environment:
+      - PUID=2001
+      - GUID=2001
     ports:
       - 8086:8086
     volumes:
-      - /opt/appdata/influxdb:/var/lib/influxdb
+      - type: volume
+        source: influxdb_volume
+        target: /var/lib/influxdb
+        volume:
+          nocopy: true
     restart: unless-stopped
 
   grafana:
     image: grafana/grafana:7.1.5-ubuntu
     container_name: monitor-grafana
+    environment:
+      - PUID=2001
+      - GUID=2001
     ports:
       - 3000:3000
     volumes:
-      - /opt/appdata/grafana:/var/lib/grafana
+      - type: volume
+        source: influxdb_volume
+        target: /var/lib/grafana
+        volume:
+          nocopy: true
     depends_on:
       - influxdb
     restart: unless-stopped
+
+volumes:
+  influxdb_volume:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.1.3,nolock,soft,rw"
+      device: ":/mnt/docker_service_monitor/influxdb"
+  grafana_volume:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.1.3,nolock,soft,rw"
+      device: ":/mnt/docker_service_monitor/grafana"
