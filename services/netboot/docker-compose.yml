@@ -1,0 +1,21 @@
+#
+# Homelab Network Boot Server
+#
+# References:
+# - https://hub.docker.com/r/linuxserver/netbootxyz
+# - https://netboot.xyz/booting/tftp/
+#
+
+version: "2.4"
+services:
+  netbootxyz:
+    image: linuxserver/netbootxyz
+    container_name: netboot.xyz
+    environment:
+      - PUID=1000
+      - GUID=1000
+    ports:
+      - 3000:3000
+      - 69:69/udp
+      - 8080:80
+    restart: unless-stopped
